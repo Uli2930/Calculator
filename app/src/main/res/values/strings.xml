@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Calculator</string>
+    <string-array name="examples">
+        <item>Type</item>
+        <item>Price</item>
+        <item>Accessibility</item>
+    </string-array>
 </resources>

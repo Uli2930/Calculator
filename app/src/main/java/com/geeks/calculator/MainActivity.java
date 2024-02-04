@@ -2,8 +2,11 @@ package com.geeks.calculator;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.material.button.MaterialButton;
@@ -11,15 +14,25 @@ import com.google.android.material.button.MaterialButton;
 public class MainActivity extends AppCompatActivity {
 
     private TextView textView;
-    private Integer firstOperand, secondOperand;
+    private Button switchButton;
+    private Double firstOperand, secondOperand;
     private Boolean isOperationClick;
-    private String ulan;
+    private String ulan = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         textView = findViewById(R.id.text_view);
+        switchButton = findViewById(R.id.btn_next_activity);
+
+        switchButton.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, SecondActivity.class);
+            intent.putExtra("key", textView.getText().toString());
+            startActivity(intent);
+
+
+        });
     }
 
     public void onNumberClick(View view) {
@@ -43,34 +56,37 @@ public class MainActivity extends AppCompatActivity {
     public void onOperation0nClick(View view) {
         String currentText = textView.getText().toString();
         isOperationClick = true;
-
-        if (view.getId() == R.id.btn_plus) {
-            firstOperand = Integer.valueOf(currentText);
+        if (view.getId() == R.id.btn_equal) {
+            switchButton.setVisibility(View.VISIBLE);
+        } else if (view.getId() == R.id.btn_plus) {
+            firstOperand = Double.valueOf(currentText);
             ulan = "+";
         } else if (view.getId() == R.id.btn_minus) {
-            firstOperand = Integer.valueOf(currentText);
+            firstOperand = Double.valueOf(currentText);
             ulan = "-";
         } else if (view.getId() == R.id.btn_division) {
-            firstOperand = Integer.valueOf(currentText);
+            firstOperand = Double.valueOf(currentText);
             ulan = "/";
         } else if (view.getId() == R.id.btn_multiplication) {
-            firstOperand = Integer.valueOf(currentText);
+            firstOperand = Double.valueOf(currentText);
             ulan = "*";
         } else if (view.getId() == R.id.btn_equal) {
-            secondOperand = Integer.valueOf(currentText);
-            int result = calculateResult(firstOperand, secondOperand, ulan);
+            secondOperand = Double.valueOf(currentText);
+            double result = calculateResult(firstOperand, secondOperand, ulan);
             textView.setText(String.valueOf(result));
             isOperationClick = false;
         }
 
     }
 
-    private int calculateResult(int firstOperand, int secondOperand, String operator) {
+    private double calculateResult(double firstOperand, double secondOperand, String operator) {
         switch (operator) {
+            
             case "+":
                 return firstOperand + secondOperand;
             case "-":
                 return firstOperand - secondOperand;
+
             case "/":
                 if (secondOperand != 0) {
                     return firstOperand / secondOperand;
@@ -83,5 +99,17 @@ public class MainActivity extends AppCompatActivity {
                 return 0;
 
         }
+
     }
+
+    public String cancelDouble(Double number) {
+        String text = number.toString();
+        if (text.substring(text.length() - 2).equals(".0")) {
+            return text.substring(0, textView.length() - 2);
+        } else {
+            return number.toString();
+
+        }
+    }
+
 }
